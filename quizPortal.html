@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz MASTER😎</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 89;
+            padding: 10;
+            background-color: #dacece;
+        }
+        header {
+            background-color: #007BFF;
+            color: rgb(255, 251, 251);
+            padding: 15px;
+            text-align: center;
+            font-size: 2em;
+        }
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: rgb(6, 239, 247);
+            padding: 20px;
+            border-radius: 79px;
+            box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            margin: 5px 0;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn:focus {
+            outline: none;
+        }
+        input[type="email"],
+        input[type="password"],
+        input[type="text"],
+        select {
+            width: 90%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 5px solid #ccc;
+            border-radius: 30px;
+            font-size: 1em;
+        }
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            border-color: #007BFF;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+        }
+        .navigation button {
+            width: 48%;
+        }
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #fff;
+            padding: 10px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question {
+            margin-bottom: 40px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .option input {
+            margin-right: 10px;
+        }
+        
+        /* Add styles for the name entry modal */
+        #name-entry input,
+        #name-entry select {
+            padding: 8px;
+            width: 95%;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+       
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 600px) {
+            header {
+                font-size: 1.2em;
+            }
+            .container {
+                width: 90%;
+            }
+            .btn {
+                width: 100%;
+                font-size: 1.1em;
+            }
+            .timer {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>Quiz MASTER😎</header>
+
+    <!-- Login Page -->
+    <div id="login" class="container">
+        <h2>Login</h2>
+        <input type="email" id="login-email" placeholder="Enter your email" />
+        <input type="password" id="login-password" placeholder="Enter your password" />
+        <p class="error-message" id="login-error">Invalid credentials, please try again.</p>
+        <button class="btn" onclick="login()">Login</button>
+        <p>Don't have an account? <span style="color: blue; cursor: pointer;" onclick="showSignup()">Sign Up</span></p>
+    </div>
+
+    <!-- Sign Up Page -->
+    <div id="signup" class="container" style="display:none;">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-username" placeholder="Enter your username" />
+        <input type="email" id="signup-email" placeholder="Enter your email" />
+        <input type="password" id="signup-password" placeholder="Enter your password" />
+        <input type="password" id="signup-password" placeholder="Confirm your password" />
+        <p class="error-message" id="signup-error">Please fill all fields.</p>
+        <button class="btn" onclick="signup()">Sign Up</button>
+        <p>Already have an account? <span style="color: blue; cursor: pointer;" onclick="showLogin()">Login</span></p>
+    </div>
+
+
+    <!-- Guidelines Page -->
+    <div id="guidelines" class="container" style="display:none;">
+        <h2>Guidelines</h2>
+        <p><strong>Exam Name:</strong> General Knowledge Quiz</p>
+        <p><strong>Duration:</strong> 1 Hour</p>
+        <p><strong>Number of Questions:</strong> 25</p>
+        <p><strong>Marking Scheme:</strong></p>
+        <ul>
+            <p>+4 points for each correct answer.</p>
+            <p>-1 point for each incorrect answer.</p>
+            <p>0 points for unattempted questions.</p>
+        </ul>
+        <p><strong>Instructions:</strong></p>
+        <ul>
+            <p>Read each question carefully before selecting your answer.</li>
+            <p>You can navigate between questions using the "Next" and "Previous" buttons.</li>
+            <p>Ensure you review your answers before submitting the quiz.</li>
+            <p>Unanswered questions will not affect your score.</li>
+            <p>Once submitted, you cannot retake the quiz in this session.</li>
+        </ul>
+        <p><strong>Click on "Continue" to proceed to fill your details.</strong></p>
+        <button class="btn" onclick="showNameEntry()">Continue</button>
+    </div>
+
+    <!-- Name, Roll, Batch, and Year Entry Page -->
+    <div id="name-entry" class="container" style="display:none;">
+        <h2>Enter Your Details</h2>
+        <input type="text" id="user-name" placeholder="Enter your name" />
+        
+        <label for="roll-number">Select Roll Number:</label>
+        <select id="roll-number">
+            <option value="" disabled selected>Select your roll number</option>
+            <!-- Roll numbers from 01 to 30 -->
+            <option value="01">01</option>
+            <option value="02">02</option>
+            <option value="03">03</option>
+            <option value="04">04</option>
+            <option value="05">05</option>
+            <option value="06">06</option>
+            <option value="07">07</option>
+            <option value="08">08</option>
+            <option value="09">09</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+            <option value="19">19</option>
+            <option value="20">20</option>
+            <option value="21">21</option>
+            <option value="22">22</option>
+            <option value="23">23</option>
+            <option value="24">24</option>
+            <option value="25">25</option>
+            <option value="26">26</option>
+            <option value="27">27</option>
+            <option value="28">28</option>
+            <option value="29">29</option>
+            <option value="30">30</option>
+        </select>
+
+        <label for="batch">Select Batch:</label>
+        <select id="batch">
+            <!-- Batch options for different engineering streams -->
+            <option value="" disabled selected>Select your stream</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Information Technology">Information Technology</option>
+            <option value="Mechanical">Mechanical</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Civil">Civil</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Chemical">Chemical</option>
+            <option value="Biotechnology">Biotechnology</option>
+            <option value="Aerospace">Aerospace</option>
+            <option value="Environmental">Environmental</option>
+        </select>
+
+        <label for="year">Select Year:</label>
+        <select id="year">
+            <!-- Year options from 1st to 4th year -->
+            <option value="" disabled selected>Select your year</option>
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3">3rd Year</option>
+            <option value="4">4th Year</option>
+        </select>
+
+        <p class="error-message" id="name-error" style="display:none;">Please fill in all the details before submitting.</p>
+        <button class="btn" onclick="submitDetails()">Submit</button>
+        <button class="btn" onclick="cancelNameEntry()">Cancel</button>
+    </div>
+
+    <!-- Quiz Page -->
+    <div id="quiz" class="container" style="display:none;">
+        <div class="timer" id="timer">Time Left: 1:00:00</div>
+        <div class="question" id="question-text"></div>
+        <div id="options"></div>
+        <div class="navigation">
+            <button class="btn" onclick="prevQuestion()">Previous</button>
+            <button class="btn" onclick="nextQuestion()">Next</button>
+        </div>
+        <button class="btn" style="display:none;" id="submit-btn" onclick="showSubmissionWarning()">Submit</button>
+    </div>
+
+    <!-- Submission Page -->
+    <div id="submission" class="container" style="display:none;">
+        <h2>Thank You!</h2>
+        <p>Exam has been submitted successfully.</p>
+        <button class="btn" onclick="showLeaderboard()">See Leaderboard</button>
+        <button class="btn" onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+
+    <!-- Leaderboard Page -->
+    <div id="leaderboard" class="container" style="display:none;">
+        <h2>Leaderboard</h2>
+        <ol id="leaderboard-list">
+            <!-- Leaderboard Entries will be inserted here -->
+        </ol>
+        <div class="navigation">
+            
+        </div>
+        <button class="btn" onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+
+    <script>
+
+        const questions = [
+            { question: "What is the capital of France?", options: ["Berlin", "Madrid", "Paris", "Lisbon"], answer: 2 },
+            { question: "Which planet is known as the Red Planet?", options: ["Earth", "Mars", "Jupiter", "Saturn"], answer: 1 },
+            { question: "What is the largest ocean on Earth?", options: ["Atlantic", "Indian", "Arctic", "Pacific"], answer: 3 },
+            { question: "Who wrote 'Romeo and Juliet'?", options: ["Charles Dickens", "Mark Twain", "William Shakespeare", "Jane Austen"], answer: 2 },
+            { question: "What is the chemical symbol for gold?", options: ["Au", "Ag", "Pb", "Fe"], answer: 0 },
+            {
+                question: "Which gas do plants absorb from the atmosphere?",
+                options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"],
+                answer: 1
+            },
+            {
+                question: "What is the smallest prime number?",
+                options: ["0", "1", "2", "3"],
+                answer: 2
+            },
+            {
+                question: "Which element has the atomic number 1?",
+                options: ["Helium", "Oxygen", "Hydrogen", "Carbon"],
+                answer: 2
+            },
+            {
+                question: "What is the capital of Japan?",
+                options: ["Seoul", "Beijing", "Tokyo", "Bangkok"],
+                answer: 2
+            },
+            {
+                question: "Which is the largest mammal in the world?",
+                options: ["Elephant", "Blue Whale", "Giraffe", "Great White Shark"],
+                answer: 1
+            },
+            {
+                question: "What is the main ingredient in guacamole?",
+                options: ["Tomato", "Avocado", "Pepper", "Onion"],
+                answer: 1
+            },
+            {
+                question: "Which country is known as the Land of the Rising Sun?",
+                options: ["China", "Japan", "Thailand", "Vietnam"],
+                answer: 1
+            },
+            {
+                question: "What is the hardest natural substance on Earth?",
+                options: ["Gold", "Iron", "Diamond", "Quartz"],
+                answer: 2
+            },
+            {
+                question: "What is the longest river in the world?",
+                options: ["Amazon", "Nile", "Yangtze", "Mississippi"],
+                answer: 1
+            },
+            {
+                question: "Which planet is closest to the sun?",
+                options: ["Venus", "Earth", "Mercury", "Mars"],
+                answer: 2
+            },
+            {
+                question: "What is the capital of Italy?",
+                options: ["Rome", "Milan", "Venice", "Florence"],
+                answer: 0
+            },
+            {
+                question: "Which organ is responsible for pumping blood in the human body?",
+                options: ["Liver", "Lungs", "Heart", "Kidneys"],
+                answer: 2
+            },
+            {
+                question: "What is the largest continent on Earth?",
+                options: ["Africa", "Asia", "North America", "Europe"],
+                answer: 1
+            },
+            {
+                question: "What is the freezing point of water?",
+                options: ["0°C", "100°C", "32°F", "212°F"],
+                answer: 0
+            },
+            {
+                question: "Which famous scientist developed the theory of relativity?",
+                options: ["Isaac Newton", "Albert Einstein", "Galileo Galilei", "Stephen Hawking"],
+                answer: 1
+            },
+            {
+                question: "What is the capital of Australia?",
+                options: ["Sydney", "Melbourne", "Canberra", "Brisbane"],
+                answer: 2
+            },
+            {
+                question: "Which is the smallest country in the world?",
+                options: ["Monaco", "Vatican City", "San Marino", "Liechtenstein"],
+                answer: 1
+            },
+            {
+                question: "What is the main language spoken in Brazil?",
+                options: ["Spanish", "Portuguese", "English", "French"],
+                answer: 1
+            },
+            {
+                question: "Which planet is known for its rings?",
+                options: ["Jupiter", "Saturn", "Uranus", "Neptune"],
+                answer: 1
+            },
+            {
+                question: "What is the capital of Canada?",
+                options: ["Toronto", "Ottawa", "Vancouver", "Montreal"],
+                answer: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        const totalQuestions = questions.length;
+        let userAnswers = new Array(totalQuestions).fill(null);
+        let leaderboardData = JSON.parse(localStorage.getItem('leaderboardData')) || [];
+        let leaderboardPage = 0;
+        const leaderboardPageSize = 5;
+        let timerInterval;
+
+        // Show login page
+        function showLogin() {
+            document.getElementById('login').style.display = 'block';
+            document.getElementById('signup').style.display = 'none';
+        }
+
+        // Show signup page
+        function showSignup() {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('signup').style.display = 'block';
+        }
+
+        // Signup function
+        function signup() {
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            if (username && email && password) {
+                localStorage.setItem('username', username);
+                localStorage.setItem('email', email);
+                localStorage.setItem('password', password);
+                alert("Account created successfully! Please log in.");
+                showLogin();
+            } else {
+                document.getElementById('signup-error').style.display = 'block';
+            }
+        }
+
+        // Login function
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const storedEmail = localStorage.getItem('email');
+            const storedPassword = localStorage.getItem('password');
+
+            if (email === storedEmail && password === storedPassword) {
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('guidelines').style.display = 'block';
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        function showGuidelines() {
+            document.getElementById('guidelines').style.display = 'block';
+        }
+
+        function showNameEntry() {
+            document.getElementById('guidelines').style.display = 'none';
+            document.getElementById('name-entry').style.display = 'block';
+        }
+
+        function submitDetails() {
+            const userName = document.getElementById('user-name').value.trim();
+            const rollNumber = document.getElementById('roll-number').value;
+            const batch = document.getElementById('batch').value;
+            const year = document.getElementById('year').value;
+
+            if (userName && rollNumber && batch && year) {
+                localStorage.setItem('userName', userName);
+                localStorage.setItem('rollNumber', rollNumber);
+                localStorage.setItem('batch', batch);
+                localStorage.setItem('year', year);
+
+                document.getElementById('name-entry').style.display = 'none';
+                startQuiz();
+            } else {
+                document.getElementById('name-error').style.display = 'block';
+            }
+        }
+
+        function cancelNameEntry() {
+            document.getElementById('name-entry').style.display = 'none';
+            showGuidelines();
+        }
+
+        function startQuiz() {
+            document.getElementById('quiz').style.display = 'block';
+            document.getElementById('submit-btn').style.display = 'inline-block';
+
+            loadQuestion(currentQuestion);
+            startTimer();
+        }
+
+        function loadQuestion(index) {
+            const question = questions[index];
+            document.getElementById('question-text').innerHTML = `${index + 1}. ${question.question}`;
+            let optionsHtml = '';
+            question.options.forEach((option, i) => {
+                optionsHtml += `
+                    <div class="option">
+                        <input type="radio" name="option" value="${i}" onclick="selectAnswer(${i})" /> ${option}
+                    </div>
+                `;
+            });
+            document.getElementById('options').innerHTML = optionsHtml;
+        }
+
+        function selectAnswer(optionIndex) {
+            userAnswers[currentQuestion] = optionIndex;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions - 1) {
+                currentQuestion++;
+                loadQuestion(currentQuestion);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion(currentQuestion);
+            }
+        }
+
+        function showSubmissionWarning() {
+            if (confirm('Are you sure you want to submit the quiz?')) {
+                submitQuiz();
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+
+            const userName = localStorage.getItem('userName');
+            const rollNumber = localStorage.getItem('rollNumber');
+            let score = 0;
+
+            questions.forEach((question, index) => {
+                if (userAnswers[index] === question.answer) {
+                    score += 4;  // Correct answer
+                } else if (userAnswers[index] !== null) {
+                    score -= 1;  // Incorrect answer
+                }
+            });
+
+            leaderboardData.push({ name: userName, score: score });
+            leaderboardData.sort((a, b) => b.score - a.score);
+            localStorage.setItem('leaderboardData', JSON.stringify(leaderboardData));
+
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('submission').style.display = 'block';
+        }
+
+        function showLeaderboard() {
+            document.getElementById('submission').style.display = 'none';
+            document.getElementById('leaderboard').style.display = 'block';
+
+            displayLeaderboard();
+        }
+
+        function displayLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboard-list');
+            leaderboardList.innerHTML = '';  // Clear previous leaderboard entries
+
+            const start = leaderboardPage * leaderboardPageSize;
+            const end = start + leaderboardPageSize;
+            const currentPageData = leaderboardData.slice(start, end);
+
+            currentPageData.forEach((entry, index) => {
+                const listItem = document.createElement('li');
+
+                // Format the roll number with leading zeros (01, 02, etc.)
+                const rollNumber = (start + index + 1).toString().padStart(2, '0');
+
+                // Display name, score, and roll number in the leaderboard
+                listItem.textContent = ` ${entry.name} - ${entry.score} points`;
+
+                leaderboardList.appendChild(listItem);
+            });
+        }
+
+        function restartQuiz() {
+            location.reload();
+        }
+
+        function nextLeaderboardPage() {
+            leaderboardPage++;
+            displayLeaderboard();
+        }
+
+        function prevLeaderboardPage() {
+            leaderboardPage--;
+            displayLeaderboard();
+        }
+
+        function startTimer() {
+            let timeLeft = 3600;  // 1 hour in seconds
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = `Time Left: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
